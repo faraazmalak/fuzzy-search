@@ -4,12 +4,12 @@ function fuzzySearch(haystackList, needle, renderer, caseSensitive = false) {
 	}
 
 	/* Check if the match is fuzzy, and assign it a score
-	   based on number of letter matches
-	*/
+		 based on number of letter matches
+	      */
 	const isFuzzyMatch = function (hayStack) {
 		const needleLetters = needle.split("");
 		let score = 0;
-		let lastSearchedLetter = '';
+		let lastSearchedLetter = "";
 		needleLetters.forEach(function (letter) {
 			if (letter != lastSearchedLetter && hayStack.includes(letter)) {
 				score++;
@@ -40,8 +40,8 @@ function fuzzySearch(haystackList, needle, renderer, caseSensitive = false) {
 	// Store preciseMatch and fuzzyMatch separately, to avoid running sort on preciseMatch
 	let preciseMatch = "";
 	let fuzzyMatch = [];
-
-	for (let i = haystackList.length - 1; i >= 0; i--) {
+	const hayStackLength = haystackList.length
+	for (let i = 0; i < hayStackLength; i++) {
 		let searchItem = haystackList[i];
 		if (!caseSensitive) {
 			searchItem = searchItem.toLowerCase();
@@ -60,8 +60,8 @@ function fuzzySearch(haystackList, needle, renderer, caseSensitive = false) {
 			}
 		}
 	}
-	sortArray(fuzzyMatch);
-	return renderer(preciseMatch.split(' '), fuzzyMatch);
+	//sortArray(fuzzyMatch);
+	return renderer(preciseMatch.split(" "), fuzzyMatch);
 }
 
 var data = [
