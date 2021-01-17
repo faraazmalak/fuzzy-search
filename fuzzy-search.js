@@ -30,37 +30,30 @@ function fuzzySearch(haystackList, needle, renderer, caseSensitive = false) {
 		return false;
 	};
 
-	// Sort the fuzzy results, based on the score
-	const sortArray = function (list) {
-		list.sort(function (a, b) {
-			return a.score < b.score ? 1 : -1;
-		});
-	};
-
 	// Store preciseMatch and fuzzyMatch separately, to avoid running sort on preciseMatch
 	let preciseMatch = "";
 	let fuzzyMatch = [];
 	const hayStackLength = haystackList.length
 	for (let i = 0; i < hayStackLength; i++) {
-		let searchItem = haystackList[i];
+		const originalHayStack = haystackList[i]
+		let caseConvertedHayStack = originalHayStack;
 		if (!caseSensitive) {
-			searchItem = searchItem.toLowerCase();
+			caseConvertedHayStack = caseConvertedHayStack.toLowerCase();
 		}
 
-		let score = isPreciseMatch(searchItem);
+		let score = isPreciseMatch(caseConvertedHayStack);
 
 		// Check the score of searchItem and act accordingly
 		if (score == 1) {
-			preciseMatch += `${haystackList[i]} `;
+			preciseMatch += `${originalHayStack} `;
 		} else if (score == 2) {
-			preciseMatch = `${haystackList[i]} ${preciseMatch} `;
+			preciseMatch = `${originalHayStack} ${preciseMatch} `;
 		} else {
-			if (isFuzzyMatch(searchItem)) {
-				fuzzyMatch.push({ item: haystackList[i], score });
+			if (isFuzzyMatch(caseConvertedHayStack)) {
+				fuzzyMatch.push(originalHayStack);
 			}
 		}
 	}
-	//sortArray(fuzzyMatch);
 	return renderer(preciseMatch.split(" "), fuzzyMatch);
 }
 
@@ -81,7 +74,7 @@ const renderer = function (preciseMatch, fuzzyMatch) {
 	let output = null;
 	if (preciseMatch.length || fuzzyMatch.length) {
 		output = preciseMatch.map((result) => `<li>${result}</li>`).join("");
-		output += fuzzyMatch.map((result) => `<li>${result.item}</li>`).join("");
+		output += fuzzyMatch.map((result) => `<li>${result}</li>`).join("");
 	} else {
 		output = "<li>No results found.</li>";
 	}
